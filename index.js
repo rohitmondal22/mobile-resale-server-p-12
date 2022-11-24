@@ -3,7 +3,7 @@ const cors = require("cors");
 const app = express();
 require("dotenv").config();
 const port = process.env.PORT || 8000;
-const stripe = require("stripe")();
+const stripe = require("stripe")(process.env.PMENT_SICRET);
 
 // medilwoire
 app.use(cors());
@@ -16,7 +16,7 @@ app.use(express.json());
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 const uri =
-  "mongodb+srv://Assignment-12:Jcnjp5Qu5gFeSLf2@cluster0.gdl5efg.mongodb.net/?retryWrites=true&w=majority";
+  `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASSWORD}@cluster0.gdl5efg.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
@@ -37,7 +37,7 @@ async function run() {
     // all products get
     app.get("/allProducts/:id", async (req, res) => {
       const ide = req.params.id;
-      console.log(ide);
+   
       const query = { id: ide };
       const result = await allProducts.find(query).toArray();
       res.send(result);
@@ -45,7 +45,7 @@ async function run() {
     // buy product   get
     app.get("/buy/:id", async (req, res) => {
       const ide = req.params.id;
-      console.log(ide);
+ 
       const query = { _id: ObjectId(ide) };
       const result = await allProducts.find(query).toArray();
       res.send(result);
@@ -55,6 +55,23 @@ async function run() {
 
 
     // pment explore
+    app.post("/create-payment-intent", async (req, res) => {
+      const p = req.body;
+      console.log(p);
+      const amount = parseInt(p.Price) * 100;
+      console.log(amount);
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "inr",
+        payment_method_types: ["card"],
+      });
+
+      res.send({
+        clientSecret: paymentIntent.client_secret,
+      });
+    });
+      
   } finally {
   }
 }
