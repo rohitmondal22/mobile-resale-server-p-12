@@ -27,6 +27,8 @@ async function run() {
   try {
     const allProducts = client.db("assignmentDb").collection("allproduct");
     const allCatagory = client.db("assignmentDb").collection("allCatagory");
+    const ordercollictions = client.db("assignmentDb").collection("Orders");
+    const userscollictions = client.db("assignmentDb").collection("users");
 
     // all CATOCORY get
     app.get("/allCatagory", async (req, res) => {
@@ -37,7 +39,7 @@ async function run() {
     // all products get
     app.get("/allProducts/:id", async (req, res) => {
       const ide = req.params.id;
-   
+
       const query = { id: ide };
       const result = await allProducts.find(query).toArray();
       res.send(result);
@@ -45,28 +47,48 @@ async function run() {
     // buy product   get
     app.get("/buy/:id", async (req, res) => {
       const ide = req.params.id;
- 
       const query = { _id: ObjectId(ide) };
       const result = await allProducts.find(query).toArray();
       res.send(result);
     });
 
+    // order **********************************
+    //  post
+    app.post("/orders", async (req, res) => {
+      const useinfo = req.body;
+      const result = await ordercollictions.insertOne(useinfo);
+      res.send(result);
+    });
+    //get order
+    app.get("/orders", async (req, res) => {
+      const query = {};
+      const result = await ordercollictions.find(query).toArray();
+      res.send(result);
+    });
 
+    // user informaito sate in database***************************
+    //post
+    app.post("/users", async (req, res) => {
+      const userinformation = req.body;
+      const result = await userscollictions.insertOne(userinformation);
+      res.send(result);
+    });
+    //get
+    app.get("/users", async (req, res) => {
+      const userinformation = {};
+      const result = await userscollictions.find(userinformation).toArray();
+      res.send(result);
+    });
 
-
-    // pment explore
+    // pment explore**********************************
     app.post("/create-payment-intent", async (req, res) => {
       const p = req.body;
-      console.log(p);
       const amount = parseInt(p.Price) * 100;
-      console.log(amount);
-
       const paymentIntent = await stripe.paymentIntents.create({
         amount: amount,
         currency: "inr",
         payment_method_types: ["card"],
       });
-
       res.send({
         clientSecret: paymentIntent.client_secret,
       });
