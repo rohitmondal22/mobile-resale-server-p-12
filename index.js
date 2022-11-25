@@ -27,7 +27,7 @@ async function run() {
   try {
     const allProducts = client.db("assignmentDb").collection("allproduct");
     const allCatagory = client.db("assignmentDb").collection("allCatagory");
-    const ordercollictions = client.db("assignmentDb").collection("Orders");
+    const bookcollictions = client.db("assignmentDb").collection("books");
     const userscollictions = client.db("assignmentDb").collection("users");
 
     // all CATOCORY get
@@ -45,7 +45,7 @@ async function run() {
       res.send(result);
     });
     // buy product   get
-    app.get("/buy/:id", async (req, res) => {
+    app.get("/books/:id", async (req, res) => {
       const ide = req.params.id;
       const query = { _id: ObjectId(ide) };
       const result = await allProducts.find(query).toArray();
@@ -54,15 +54,15 @@ async function run() {
 
     // order **********************************
     //  post
-    app.post("/orders", async (req, res) => {
+    app.post("/books", async (req, res) => {
       const useinfo = req.body;
-      const result = await ordercollictions.insertOne(useinfo);
+      const result = await bookcollictions.insertOne(useinfo);
       res.send(result);
     });
     //get order
-    app.get("/orders", async (req, res) => {
+    app.get("/books", async (req, res) => {
       const query = {};
-      const result = await ordercollictions.find(query).toArray();
+      const result = await bookcollictions.find(query).toArray();
       res.send(result);
     });
 
