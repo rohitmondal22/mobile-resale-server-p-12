@@ -72,12 +72,13 @@ async function run() {
       res.send(result);
     });
     //get book
-    app.get("/booking", async (req, res) => {
-      const emails = req.query.email;
-      const query = { email: emails };
-      const result = await bookcollictions.find(query);
-      res.send(result);
-    });
+    app.get('/booking', async(req , res)=>{
+      const email =req.query.email
+      console.log(email);
+      const query = {productemail : email}
+      const baiours =await bookcollictions.find(query).toArray();
+      res.send(baiours)
+    })
 
     // user informaito sate in database***************************
     //post
