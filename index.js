@@ -36,6 +36,9 @@ async function run() {
       const result = await allCatagory.find(query).toArray();
       res.send(result);
     });
+
+
+    //all  products **********************************
     // all products get
     app.get("/allProducts/:id", async (req, res) => {
       const ide = req.params.id;
@@ -44,6 +47,7 @@ async function run() {
       const result = await allProducts.find(query).toArray();
       res.send(result);
     });
+
     // buy product   get
     app.get("/books/:id", async (req, res) => {
       const ide = req.params.id;
@@ -52,17 +56,26 @@ async function run() {
       res.send(result);
     });
 
-    // order **********************************
+    app.post('/allProduct' , async(req , res)=>{
+      const info = req.body;
+      console.log(info);
+      const result =await allProducts.insertOne(info);
+      res.send(result)
+    })
+
+
+    // book **********************************
     //  post
     app.post("/books", async (req, res) => {
       const useinfo = req.body;
       const result = await bookcollictions.insertOne(useinfo);
       res.send(result);
     });
-    //get order
-    app.get("/books", async (req, res) => {
-      const query = {};
-      const result = await bookcollictions.find(query).toArray();
+    //get book
+    app.get("/booking", async (req, res) => {
+      const emails = req.query.email;
+      const query = { email: emails };
+      const result = await bookcollictions.find(query);
       res.send(result);
     });
 
@@ -75,7 +88,8 @@ async function run() {
     });
     //get
     app.get("/users", async (req, res) => {
-      const userinformation = {};
+      const emails = req.query.email;
+      const userinformation = { email: emails };
       const result = await userscollictions.find(userinformation).toArray();
       res.send(result);
     });
@@ -93,7 +107,6 @@ async function run() {
         clientSecret: paymentIntent.client_secret,
       });
     });
-      
   } finally {
   }
 }
