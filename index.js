@@ -15,6 +15,7 @@ app.use(express.json());
 // mongodb atlast
 
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
+const { query } = require("express");
 const uri =
   `mongodb+srv://${process.env.DB_NAME}:${process.env.DB_PASSWORD}@cluster0.gdl5efg.mongodb.net/?retryWrites=true&w=majority`;
 const client = new MongoClient(uri, {
@@ -47,6 +48,22 @@ async function run() {
       const result = await allProducts.find(query).toArray();
       res.send(result);
     });
+    
+    //my products get with email 
+    app.get("/mypro", async (req, res) => {
+      const emails = req.query.email;
+      const userinformation = {emali : emails};
+      const result = await allProducts.find(userinformation).toArray();
+      res.send(result);
+    });
+
+    app.delete('/mypro/:id' , async(req , res) =>{
+      const id = req.params.id
+      console.log(id);
+      const query = {_id : ObjectId(id)}
+      const result = await allProducts.deleteOne(query);
+      res.send(result)
+    })
 
     // buy product   get
     app.get("/books/:id", async (req, res) => {
