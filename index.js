@@ -48,6 +48,13 @@ async function run() {
       res.send(result);
     });
 
+     //all seler get
+     app.get("/advatise", async (req, res) => {
+      const query = { advertise: "done" };
+      const result = await allProducts.find(query).toArray();
+      res.send(result);
+    });
+
     //my products get with email
     app.get("/mypro", async (req, res) => {
       const emails = req.query.email;
@@ -156,6 +163,39 @@ async function run() {
     app.get("/allseler", async (req, res) => {
       const query = { roll: "Seller account" };
       const result = await userscollictions.find(query).toArray();
+      res.send(result);
+    });
+
+    //update user vary fid
+    app.put("/allseler", async (req, res) => {
+      const ids = req.query.email;
+      console.log(ids);
+
+      const filter = { email: ids };
+
+      const option = { upsert: true };
+      const updateUser = {
+        $set: {
+          varefy: "done",
+        },
+      };
+      const result = await userscollictions.updateOne(filter, updateUser, option);
+      res.send(result);
+    });
+    //update allProducts vary fid
+    app.put("/allseler", async (req, res) => {
+      const ids = req.query.email;
+      console.log(ids);
+
+      const filter = { emali: ids };
+
+      const option = { upsert: true };
+      const updateUser = {
+        $set: {
+          varefy: "done",
+        },
+      };
+      const result = await allProducts.updateOne(filter, updateUser, option);
       res.send(result);
     });
     //all Buyers account get
