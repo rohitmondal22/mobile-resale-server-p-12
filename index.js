@@ -4,10 +4,29 @@ const app = express();
 require("dotenv").config();
 const port = process.env.PORT || 8000;
 const stripe = require("stripe")(process.env.PMENT_SICRET);
+const jwt = require("jsonwebtoken");
+
 
 // medilwoire
 app.use(cors());
 app.use(express.json());
+
+function jottoken(req, res, next) {
+  const authtoken = req.headers.authorizitan;
+ 
+
+  if (!authtoken) {
+    return res.status(401).send({ message: "user ont found" });
+  }
+  const token = authtoken.split(" ")[1];
+  jwt.verify(token, process.env.JOT_TOKEN, function (error, decoded) {
+    if (error) {
+      return res.status(403).send({ message: " Forbidden" });
+    }
+    req.decoded = decoded;
+    next();
+  });
+}
 
 // Assignment-12
 // Jcnjp5Qu5gFeSLf2
@@ -30,6 +49,13 @@ async function run() {
     const allCatagory = client.db("assignmentDb").collection("allCatagory");
     const bookcollictions = client.db("assignmentDb").collection("books");
     const userscollictions = client.db("assignmentDb").collection("users");
+
+    // jot token*********
+    app.post("/jwt", (req, res) => {
+      const user = req.body;
+      const token = jwt.sign(user, process.env.JWT_TOKEN, { expiresIn: "12h" });
+      res.send({ token });
+    });
 
     // all CATOCORY get
     app.get("/allCatagory", async (req, res) => {
@@ -86,6 +112,19 @@ async function run() {
       res.send(result);
     });
 
+    //update not addvirtices
+    app.put("/notadvertice/:id", async (req, res) => {
+      const ids = req.params.id;
+      const filter = { _id: ObjectId(ids) };
+      const option = { upsert: true };
+      const updateUser = {
+        $set: {
+          advertise: 'non',
+        },
+      };
+      const result = await allProducts.updateOne(filter, updateUser, option);
+      res.send(result);
+    });
     //update report masege
     app.put("/reportmessage/:id", async (req, res) => {
       const ids = req.params.id;
