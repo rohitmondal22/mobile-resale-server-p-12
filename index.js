@@ -38,7 +38,7 @@ async function run() {
       res.send(result);
     });
 
-    //all  products **********************************
+    //all  products **************************************************************************************************
     // all products get
     app.get("/allProducts/:id", async (req, res) => {
       const ide = req.params.id;
@@ -48,8 +48,8 @@ async function run() {
       res.send(result);
     });
 
-     //all seler get
-     app.get("/advatise", async (req, res) => {
+    //all seler get
+    app.get("/advatise", async (req, res) => {
       const query = { advertise: "done" };
       const result = await allProducts.find(query).toArray();
       res.send(result);
@@ -86,6 +86,20 @@ async function run() {
       res.send(result);
     });
 
+    //update report masege
+    app.put("/reportmessage/:id", async (req, res) => {
+      const ids = req.params.id;
+     const repurtt = req.body;
+      const filter = { _id: ObjectId(ids) };
+      const option = { upsert: true };
+      const updateUser = {
+        $set: {
+          report: 'reporte',
+        },
+      };
+      const result = await allProducts.updateOne(filter, updateUser, option);
+      res.send(result);
+    });
     //update book in pmant sistem is done
     app.put("/advertise/:id", async (req, res) => {
       const ids = req.params.id;
@@ -119,7 +133,13 @@ async function run() {
       res.send(result);
     });
 
-    // book **********************************
+  app.get('/reportedites', async (req ,res)=>{
+    const query ={report : 'reporte'}
+    const result = await allProducts.find(query).toArray()
+    res.send(result)
+  })
+
+    // book ************************************************************************************************************
     //  post
     app.post("/books", async (req, res) => {
       const useinfo = req.body;
@@ -161,7 +181,16 @@ async function run() {
       res.send(result);
     });
 
-    // user informaito sate in database***************************
+    // user informaito sate in database***********************************************************************************
+    //get veryfide user
+
+    app.get("/uservery", async (req, res) => {
+      const emails = req.query.email;
+      const querys = { email: emails };
+      const result = await userscollictions.findOne(querys);
+      res.send(result);
+    });
+
     //post
     app.post("/users", async (req, res) => {
       const userinformation = req.body;
@@ -195,7 +224,11 @@ async function run() {
           varefy: "done",
         },
       };
-      const result = await userscollictions.updateOne(filter, updateUser, option);
+      const result = await userscollictions.updateOne(
+        filter,
+        updateUser,
+        option
+      );
       res.send(result);
     });
     //update allProducts vary fid
@@ -229,7 +262,7 @@ async function run() {
       res.send(result);
     });
 
-    // pment explore**********************************
+    // pment explore*****************************************************************************************************
     app.post("/create-payment-intent", async (req, res) => {
       const price = req.body;
       const amount = parseInt(price.price) * 100;
