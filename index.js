@@ -102,6 +102,22 @@ async function run() {
       const result = await allProducts.updateOne(filter, updateUser, option);
       res.send(result);
     });
+    //update book in pmant sistem is detet
+    app.put("/advertisedetel/:id", async (req, res) => {
+      const ids = req.params.id;
+      console.log(ids);
+
+      const filter = { _id: ObjectId(ids) };
+
+      const option = { upsert: true };
+      const updateUser = {
+        $set: {
+          advertise: "non",
+        },
+      };
+      const result = await allProducts.updateOne(filter, updateUser, option);
+      res.send(result);
+    });
 
     // book **********************************
     //  post
